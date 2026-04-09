@@ -19629,19 +19629,7 @@ body.theme-light .pf2-skill-panel{
     </div>
   </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
-      if (bottom){
-        bottom.style.position = 'relative';
-        bottom.style.bottom = 'auto';
-        bottom.style.zIndex = '1';
-      }
-    }catch(_e){}
-  }
-
-</script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- Firebase scripts removed: app now uses only localStorage for saved data and login/session state. -->
 
   <script>
   // NOTE: File mở từ content:// / file:// trên Android có thể chặn ES-module. 
@@ -19649,20 +19637,19 @@ body.theme-light .pf2-skill-panel{
   window.addEventListener('DOMContentLoaded', () => {
 
     /* ============================
-       1) Firebase config
+       1) Local storage mode
        ============================ */
     const firebaseConfig = {
-      // Firebase dùng cho: đăng nhập tài khoản, đồng bộ dữ liệu người dùng, lượt xem, lượt online
-      // và lưu/chia sẻ truyện + nội dung chương TXT qua Firestore.
-      apiKey: "AIzaSyCT5umDSqZPxmgjOjyUNfaxaWxb6dCXcZw",
-      authDomain: "khotruyen8.firebaseapp.com",
-      databaseURL: "https://khotruyen8-default-rtdb.firebaseio.com",
-      projectId: "khotruyen8",
-      storageBucket: "khotruyen8.firebasestorage.app",
-      messagingSenderId: "1040632894174",
-      appId: "1:1040632894174:web:f02623dbe83ba88e6f684f"
+      // Giữ nguyên biến để không làm hỏng các hàm cũ, nhưng chế độ này đã tắt.
+      apiKey: "",
+      authDomain: "",
+      databaseURL: "",
+      projectId: "",
+      storageBucket: "",
+      messagingSenderId: "",
+      appId: ""
     };
-    let ENABLE_FIREBASE = true;
+    let ENABLE_FIREBASE = false;
     const USE_LOCAL_SEED_WHEN_EMPTY = true;
 
     /* ============================
@@ -20076,7 +20063,7 @@ function updateAuthFieldsVisibility(){
     accountAuthHelp.textContent = "Bạn đang ở chế độ cục bộ trên thiết bị này.";
   } else if (accountAuthHelp){
     if (!ENABLE_FIREBASE){
-      accountAuthHelp.innerHTML = 'Bản này dùng <b>tài khoản cục bộ</b> bằng localStorage. Tên tài khoản là <b>duy nhất</b>, không phân biệt chữ hoa/thường. Admin mặc định là <b>ADMIN</b>.';
+      accountAuthHelp.innerHTML = 'Bản này dùng <b>tài khoản cục bộ</b> bằng localStorage. Tên tài khoản là <b>duy nhất</b>, không phân biệt chữ hoa/thường. Dữ liệu sẽ nằm trên <b>thiết bị này</b>.';
     } else {
       accountAuthHelp.innerHTML = 'Nhập <b>tài khoản + mật khẩu</b> để đăng nhập. Nếu tài khoản chưa có, nhập thêm <b>nhập lại mật khẩu</b> để tạo mới.';
     }
@@ -23461,23 +23448,23 @@ function normalizeUserState(raw){
         return;
       }
 
-      const canUseCloud = !!(FIREBASE_OK && db);
+      const canUseCloud = false;
 
       tabPageContent.innerHTML = `
         <div class="vip-space">
           <div class="cm-subhead" style="margin-bottom:12px">
             <button class="cm-subback" id="adminStoryBackBtn" type="button">← Admin</button>
-            <span class="community-meta"><span class="dot"></span> Kho truyện Firestore: <b id="adminStoryCloudCount">0</b></span>
+            <span class="community-meta"><span class="dot"></span> Kho truyện cục bộ: <b id="adminStoryCloudCount">0</b></span>
           </div>
 
           <div class="vip-inline-card">
             <h3>Thêm truyện</h3>
             <div class="vip-note">
-              Khu này đã đổi sang <b>Firebase Firestore</b>. Mỗi file <b>.txt</b> là <b>1 chương</b>, nội dung chương sẽ được lưu online để <b>mọi người cùng đọc chung dữ liệu</b>. Hãy chọn nhiều file TXT theo đúng thứ tự chương. Để an toàn với Firestore, mỗi file nên nhỏ hơn khoảng <b>950 KB</b>.
+              Khu này đã đổi sang <b>lưu cục bộ</b>. Mỗi file <b>.txt</b> là <b>1 chương</b>, nội dung chương sẽ được lưu trên <b>thiết bị này</b>. Hãy chọn nhiều file TXT theo đúng thứ tự chương. Để an toàn, mỗi file nên nhỏ hơn khoảng <b>950 KB</b>.
             </div>
             <div class="vip-note" style="margin-top:8px; color:${canUseCloud ? '#9dffb5' : '#ffd59e'};">
               ${canUseCloud
-                ? 'Firebase đang sẵn sàng. Bạn có thể thêm, sửa và xóa truyện online.'
+                ? 'Chế độ cục bộ đang sẵn sàng. Bạn có thể thêm, sửa và xóa truyện trên thiết bị này.'
                 : 'Firebase/Firestore chưa sẵn sàng. Hãy mở web bằng HTTPS/GitHub Pages và kiểm tra lại Rules Firebase.'}
             </div>
           </div>
@@ -23512,14 +23499,14 @@ function normalizeUserState(raw){
               <div id="adminStoryChapterList" style="display:grid; gap:10px;"></div>
 
               <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button class="btn primary" id="adminStorySaveBtn" type="button">Lưu truyện lên Firestore</button>
+                <button class="btn primary" id="adminStorySaveBtn" type="button">Lưu truyện cục bộ</button>
                 <button class="tab-page-btn" id="adminStoryResetBtn" type="button">Làm mới form</button>
               </div>
             </div>
           </div>
 
           <div class="vip-inline-card" style="margin-top:12px">
-            <h3>Truyện đã đồng bộ trên Firestore</h3>
+            <h3>Truyện đã lưu cục bộ</h3>
             <div id="adminStoryCloudList" style="display:grid; gap:10px; margin-top:10px;"></div>
           </div>
         </div>
@@ -23541,7 +23528,7 @@ function normalizeUserState(raw){
 
       const syncModeState = () => {
         const isEdit = !!editingStoryId;
-        if (saveBtn) saveBtn.textContent = isEdit ? "Cập nhật truyện trên Firestore" : "Lưu truyện lên Firestore";
+        if (saveBtn) saveBtn.textContent = isEdit ? "Cập nhật truyện cục bộ" : "Lưu truyện cục bộ";
         if (resetBtn) resetBtn.textContent = isEdit ? "Thoát sửa" : "Làm mới form";
         if (modeHintEl){
           modeHintEl.style.display = isEdit ? "block" : "none";
@@ -23559,7 +23546,7 @@ function normalizeUserState(raw){
         }
         const totalBytes = chapterDrafts.reduce((sum, item) => sum + Math.max(0, Number(item?.bytes || 0) || 0), 0);
         const fromFiles = chapterDrafts.filter(item => String(item?.source || "") === "file").length;
-        filesHintEl.innerHTML = `Đã nạp <b>${chapterDrafts.length}</b> chương • ${esc(formatBytesVi(totalBytes))}${fromFiles ? ` • ${fromFiles} file TXT mới` : " • dữ liệu hiện có từ Firestore"}`;
+        filesHintEl.innerHTML = `Đã nạp <b>${chapterDrafts.length}</b> chương • ${esc(formatBytesVi(totalBytes))}${fromFiles ? ` • ${fromFiles} file TXT mới` : " • dữ liệu hiện có"}`;
       };
 
       const renderChapterInputs = () => {
@@ -23575,10 +23562,10 @@ function normalizeUserState(raw){
           <div class="vip-admin-chip" style="display:grid; gap:8px; padding:12px;">
             <div style="display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;">
               <div style="font-weight:900; color:#eef4ff;">Chương ${idx + 1}</div>
-              <div class="muted" style="font-size:12px;">${esc(item?.fileName || (item?.source === "firestore" ? "Dữ liệu đang lưu trên Firestore" : "Không có tên file"))} • ${esc(formatBytesVi(item?.bytes || 0))}</div>
+              <div class="muted" style="font-size:12px;">${esc(item?.fileName || (item?.source === "firestore" ? "Dữ liệu đang lưu cục bộ" : "Không có tên file"))} • ${esc(formatBytesVi(item?.bytes || 0))}</div>
             </div>
             <input type="text" data-admin-chapter-title="${idx}" value="${esc(String(item?.title || `Chương ${idx + 1}`))}" placeholder="Tên chương ${idx + 1}">
-            <div class="vip-note" style="margin:0;">${String(item?.source || "") === "firestore" ? "Đang dùng nội dung hiện có trên Firestore. Chọn file TXT mới nếu muốn thay toàn bộ nội dung chương." : "Sẽ lưu nguyên nội dung file TXT này vào Firestore."}</div>
+            <div class="vip-note" style="margin:0;">${String(item?.source || "") === "firestore" ? "Đang dùng nội dung hiện có cục bộ. Chọn file TXT mới nếu muốn thay toàn bộ nội dung chương." : "Sẽ lưu nguyên nội dung file TXT này cục bộ."}</div>
           </div>
         `).join("");
         updateFilesHint();
@@ -23597,7 +23584,12 @@ function normalizeUserState(raw){
         const rows = getRemoteSharedStories();
         if (cloudCountEl) cloudCountEl.textContent = String(rows.length);
         if (!cloudListEl) return;
-        if (!canUseCloud){
+        if (!ENABLE_FIREBASE){
+          if (!rows.length){
+            cloudListEl.innerHTML = `<div class="vip-empty">Chưa có truyện cục bộ nào.</div>`;
+            return;
+          }
+        } else if (!canUseCloud){
           cloudListEl.innerHTML = `<div class="vip-empty">Chưa kết nối được Firestore nên chưa tải được danh sách truyện online.</div>`;
           return;
         }
@@ -23651,7 +23643,9 @@ function normalizeUserState(raw){
           toast("Không tìm thấy truyện để sửa.");
           return;
         }
-        if (!canUseCloud){
+        if (!ENABLE_FIREBASE){
+          // local mode
+        } else if (!canUseCloud){
           toast("Firestore chưa sẵn sàng.");
           return;
         }
@@ -23664,13 +23658,13 @@ function normalizeUserState(raw){
           $("#adminStoryStatus").value = String(story.status || "Đang ra") || "Đang ra";
           $("#adminStoryCover").value = String(story.cover || "");
           if (filesInput) filesInput.value = "";
-          chapterDrafts = await loadFirestoreChapterDrafts(story.id);
+          chapterDrafts = ENABLE_FIREBASE ? await loadFirestoreChapterDrafts(story.id) : await loadLocalCustomStoryDrafts(story);
           renderChapterInputs();
           syncModeState();
           try{ window.scrollTo({ top: 0, behavior: "smooth" }); }catch(_){ }
         }catch(err){
-          console.warn("load firestore story drafts error", err);
-          toast("Không thể tải nội dung chương từ Firestore.");
+          console.warn("load story drafts error", err);
+          toast(ENABLE_FIREBASE ? "Không thể tải nội dung chương từ Firestore." : "Không thể tải nội dung chương cục bộ.");
         }finally{
           setBusy(false);
         }
@@ -23727,7 +23721,9 @@ function normalizeUserState(raw){
 
       saveBtn?.addEventListener("click", async () => {
         if (isWorking) return;
-        if (!canUseCloud){
+        if (!ENABLE_FIREBASE){
+          // local mode: save into localStorage
+        } else if (!canUseCloud){
           toast("Firebase/Firestore chưa sẵn sàng.");
           return;
         }
@@ -23764,7 +23760,7 @@ function normalizeUserState(raw){
           return;
         }
         if (sanitizedDrafts.some(item => Number(item.bytes || 0) > FIRESTORE_CHAPTER_SAFE_LIMIT_BYTES)){
-          toast("Có chương vượt quá mức an toàn để lưu Firestore.");
+          toast(ENABLE_FIREBASE ? "Có chương vượt quá mức an toàn để lưu Firestore." : "Có chương vượt quá mức an toàn để lưu cục bộ.");
           return;
         }
 
@@ -23772,32 +23768,56 @@ function normalizeUserState(raw){
         const normalizedCategory = parsedMeta.categories.length ? parsedMeta.categories.join(", ") : "Khác";
         const storyId = editingStoryId || ("story_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7));
 
-        setBusy(true, editingStoryId ? "Đang cập nhật..." : "Đang đồng bộ...");
+        setBusy(true, editingStoryId ? "Đang cập nhật..." : "Đang lưu...");
         try{
-          await upsertFirestoreSharedStory({
-            id: storyId,
-            title,
-            category: normalizedCategory,
-            labels: parsedMeta.labels,
-            desc,
-            status,
-            cover,
-            chapters: sanitizedDrafts.length,
-            updatedAtMs: Date.now(),
-            updatedAtText: "Vừa cập nhật",
-            author: "Admin",
-            createdBy: currentUser?.uid || "admin",
-            createdByName: getPreferredUsername(currentUser) || "Admin"
-          }, sanitizedDrafts);
+          const chapterLinks = sanitizedDrafts.map(item => {
+            const txt = String(item?.content || "").replace(/^\uFEFF/, "").replace(/\r/g, "").trim();
+            return "data:text/plain;charset=utf-8," + encodeURIComponent(txt);
+          });
+          if (!ENABLE_FIREBASE){
+            upsertLocalCustomStory({
+              id: storyId,
+              title,
+              category: normalizedCategory,
+              labels: parsedMeta.labels,
+              desc,
+              status,
+              cover,
+              chapters: sanitizedDrafts.length,
+              updatedAtMs: Date.now(),
+              updatedAtText: "Vừa cập nhật",
+              author: "Admin",
+              createdBy: currentUser?.uid || "local-admin",
+              chapterLinks,
+              storageType: "local",
+              remoteSource: "local"
+            });
+          } else {
+            await upsertFirestoreSharedStory({
+              id: storyId,
+              title,
+              category: normalizedCategory,
+              labels: parsedMeta.labels,
+              desc,
+              status,
+              cover,
+              chapters: sanitizedDrafts.length,
+              updatedAtMs: Date.now(),
+              updatedAtText: "Vừa cập nhật",
+              author: "Admin",
+              createdBy: currentUser?.uid || "admin",
+              createdByName: getPreferredUsername(currentUser) || "Admin"
+            }, sanitizedDrafts);
+          }
 
           const doneEditing = !!editingStoryId;
           resetForm();
           refreshStoriesFromSources({ skipRouteRender: true });
           renderCloudStoryList();
-          toast(doneEditing ? "Đã cập nhật truyện và đồng bộ Firestore." : "Đã thêm truyện mới và đồng bộ Firestore.");
+          toast(doneEditing ? (ENABLE_FIREBASE ? "Đã cập nhật truyện và đồng bộ Firestore." : "Đã cập nhật truyện cục bộ.") : (ENABLE_FIREBASE ? "Đã thêm truyện mới và đồng bộ Firestore." : "Đã thêm truyện mới và lưu cục bộ."));
         }catch(err){
-          console.warn("save firestore story error", err);
-          toast(String(err?.message || (editingStoryId ? "Không thể cập nhật truyện lên Firestore." : "Không thể lưu truyện lên Firestore.")));
+          console.warn("save story error", err);
+          toast(String(err?.message || (editingStoryId ? (ENABLE_FIREBASE ? "Không thể cập nhật truyện lên Firestore." : "Không thể cập nhật truyện cục bộ.") : (ENABLE_FIREBASE ? "Không thể lưu truyện lên Firestore." : "Không thể lưu truyện cục bộ."))));
         }finally{
           setBusy(false);
         }
@@ -23820,6 +23840,22 @@ function normalizeUserState(raw){
         if (delBtn){
           const storyId = delBtn.getAttribute("data-admin-story-delete") || "";
           if (!storyId) return;
+          if (!ENABLE_FIREBASE){
+            setBusy(true, "Đang xóa...");
+            try{
+              removeLocalCustomStory(storyId);
+              if (editingStoryId && editingStoryId === storyId) resetForm();
+              refreshStoriesFromSources({ skipRouteRender: true });
+              renderCloudStoryList();
+              toast("Đã xóa truyện cục bộ.");
+            }catch(err){
+              console.warn("delete local story error", err);
+              toast("Không thể xóa truyện cục bộ.");
+            }finally{
+              setBusy(false);
+            }
+            return;
+          }
           if (!canUseCloud){
             toast("Firestore chưa sẵn sàng.");
             return;
@@ -29193,6 +29229,9 @@ function getReadingStories(){
     }
 
     function getRemoteSharedStories(){
+      if (!ENABLE_FIREBASE) {
+        return loadLocalCustomStories().slice().sort((a,b) => Number(b.updatedAtMs || 0) - Number(a.updatedAtMs || 0));
+      }
       return Array.isArray(FIRESTORE_SHARED_STORY_CACHE)
         ? FIRESTORE_SHARED_STORY_CACHE.slice().sort((a,b) => Number(b.updatedAtMs || 0) - Number(a.updatedAtMs || 0))
         : [];
@@ -29215,8 +29254,9 @@ function getReadingStories(){
     }
 
     function startRemoteSharedStoriesSync(){
-      if (!FIREBASE_OK || !db){
+      if (!ENABLE_FIREBASE || !FIREBASE_OK || !db){
         FIRESTORE_SHARED_STORY_CACHE.length = 0;
+        refreshStoriesFromSources();
         return false;
       }
       try{
@@ -29307,7 +29347,7 @@ function getReadingStories(){
         if (!content) throw new Error(`File ${file?.name || ("Chương " + (idx + 1))} đang trống.`);
         const bytes = getTextByteLength(content);
         if (bytes > FIRESTORE_CHAPTER_SAFE_LIMIT_BYTES){
-          throw new Error(`File ${file?.name || ("Chương " + (idx + 1))} quá nặng (${formatBytesVi(bytes)}). Hãy giữ mỗi chương dưới khoảng 950 KB để lưu Firestore an toàn.`);
+          throw new Error(`File ${file?.name || ("Chương " + (idx + 1))} quá nặng (${formatBytesVi(bytes)}). Hãy giữ mỗi chương dưới khoảng 950 KB để lưu cục bộ an toàn.`);
         }
         drafts.push({
           order: idx + 1,
@@ -29341,6 +29381,34 @@ function getReadingStories(){
         });
       });
       rows.sort((a,b) => Number(a.order || 0) - Number(b.order || 0));
+      return rows;
+    }
+
+    async function loadLocalCustomStoryDrafts(story){
+      const links = Array.isArray(story?.chapterLinks)
+        ? story.chapterLinks
+        : (story?.chapterLinks && typeof story.chapterLinks === "object" ? Object.keys(story.chapterLinks).sort((a,b) => Number(a) - Number(b)).map(k => story.chapterLinks[k]) : []);
+      const rows = [];
+      for (let i = 0; i < links.length; i += 1){
+        const link = String(links[i] || "").trim();
+        let content = "";
+        if (link.startsWith("data:text/plain")){
+          const payload = link.split(",").slice(1).join(",");
+          try{ content = decodeURIComponent(payload || ""); }catch(_){ content = payload || ""; }
+        } else if (link){
+          try{ content = await fetchChapterTextFromLink(link); }catch(_){ content = ""; }
+        }
+        content = String(content || "").replace(/^\uFEFF/, "").replace(/\r/g, "").trim();
+        rows.push({
+          id: String(i + 1),
+          order: i + 1,
+          title: `Chương ${i + 1}`,
+          content,
+          fileName: "",
+          bytes: getTextByteLength(content),
+          source: "file"
+        });
+      }
       return rows;
     }
 
@@ -38362,10 +38430,10 @@ if (searchEl){
       ensureLocalAccountSerials();
       onAuthStateChanged(auth, async (user) => {
         currentUser = user || null;
+        applyUserUI();
         startVipRequestBadgeSync();
 
         if (user){
-          applyUserUI();
           await ensureUserDoc(user);
           startUserStateListener(user);
           startPresence(user);
@@ -38381,32 +38449,19 @@ if (searchEl){
                 sub: "Tài khoản đã kết nối để đồng bộ theo dõi, lịch sử đọc, thông báo."
               }).catch(err => console.warn("push login notification error", err));
             }
-          }catch(_){ }
-          return;
-        }
-
-        const restored = restoreLocalSessionUser();
-        if (restored){
-          currentUser = restored.user;
-          userState = restored.state;
-          syncCurrentLocalUserFromState();
-          applyUserUI();
-          startPresence(currentUser);
+          }catch(_){}
+        } else {
+          if (userStateUnsub) userStateUnsub();
+          userStateUnsub = null;
+          try{ stopAccountNotificationWatchers(); }catch(_){ }
+          userState = loadGuestUserState();
+          startPresence(null); // vẫn giữ realtime online cho khách
+          syncHeaderOnlineStatus();
+          closeNotifyPanel();
+          startVipRequestBadgeSync();
           renderAll();
           renderRoute();
-          return;
         }
-
-        if (userStateUnsub) userStateUnsub();
-        userStateUnsub = null;
-        try{ stopAccountNotificationWatchers(); }catch(_){ }
-        userState = loadGuestUserState();
-        applyUserUI();
-        startPresence(null); // vẫn giữ realtime online cho khách
-        syncHeaderOnlineStatus();
-        closeNotifyPanel();
-        renderAll();
-        renderRoute();
       });
     }
 
